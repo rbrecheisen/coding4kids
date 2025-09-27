@@ -9,13 +9,14 @@ class Dude:
 
 
 class Canvas:
-    def __init__(self, root, breedte, hoogte, achtergrondkleur):
+    def __init__(self, root):
         self.root = root
-        self.breedte = breedte
-        self.hoogte = hoogte
-        self.achtergrondkleur = achtergrondkleur
-        self.canvas = tk.Canvas(self.root, width=breedte, height=hoogte, bg=self.achtergrondkleur)
+        self.achtergrondplaatje = tk.PhotoImage(file='resources/sky.png')
+        self.breedte = self.achtergrondplaatje.width()
+        self.hoogte = self.achtergrondplaatje.height()
+        self.canvas = tk.Canvas(self.root, width=self.breedte, height=self.hoogte)
         self.canvas.pack()
+        self.canvas.create_image(0, 0, image=self.achtergrondplaatje, anchor='nw')
 
     def voeg_dude_toe(self, dude):
         self.canvas.create_image(dude.x, dude.y, anchor="nw", image=dude.image)
@@ -23,7 +24,7 @@ class Canvas:
 
 def main():
     root = tk.Tk()
-    canvas = Canvas(root, breedte=800, hoogte=600, achtergrondkleur='white')
+    canvas = Canvas(root)
     dude = Dude(0, 0)
     canvas.voeg_dude_toe(dude)
     root.mainloop()

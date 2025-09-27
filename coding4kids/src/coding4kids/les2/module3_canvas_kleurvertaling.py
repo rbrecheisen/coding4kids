@@ -23,9 +23,7 @@ def main():
     root = tk.Tk()
     achtergrondkleur = KLEUREN_NEDERLANDS_NAAR_ENGELS['wit']
     canvas = Canvas(root, breedte=800, hoogte=600, achtergrondkleur=achtergrondkleur)
-    print(f'Canvas breedte: {canvas.breedte}')
-    print(f'Canvas hoogte: {canvas.hoogte}')
-    print(f'Canvas achtergrondkleur: {canvas.achtergrondkleur}')
+    print(f'Canvas: breedte = {canvas.breedte}, hoogte = {canvas.hoogte}, achtergrondkleur = {canvas.achtergrondkleur}')
     root.mainloop()
 
 
