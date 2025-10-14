@@ -1,5 +1,5 @@
-from coding4kids.game import Game
-from coding4kids.playerfield import PlayerField
+from game import Game
+from playerfield import PlayerField
 
 
 def main():

@@ -1,15 +1,16 @@
 import tkinter as tk
-from coding4kids.player import Player
-from coding4kids.bomb import Bomb
+from player import Player
+from bomb import Bomb
 
 
 class PlayerField:
     def __init__(self, game):
         # Bewaar een connectie met de game
         self.game = game
-        
+
         # Maak achtergrond
-        self.achtergrond = tk.PhotoImage(file='resources/sky.png')
+        self.achtergrond = tk.PhotoImage(file='coding4kids/src/coding4kids/resources/sky.png')
+        # self.achtergrond = tk.PhotoImage(file=image_file)
         self.breedte = self.achtergrond.width()
         self.hoogte = self.achtergrond.height()
         self.canvas = tk.Canvas(self.game, width=self.breedte, height=self.hoogte)
@@ -31,7 +32,7 @@ class PlayerField:
         self.player = Player(self, 0, 0)
         x = self.breedte / 2 - self.player.breedte / 2 - 100
         y = self.hoogte / 2 - self.player.hoogte / 2
-        self.canvas.move(self.player.icon, x, y)
+        self.player.move(x, y)
         return self.player
     
     def create_bomb(self):
@@ -41,19 +42,20 @@ class PlayerField:
     def move_player(self, event):
         key = event.keysym
         if key == 'Left':
-            # Beweeg speler naar links
-            self.canvas.move(self.player.icon, -self.player_snelheid, 0)
+            self.player.move(-self.player_snelheid, 0)
         elif key == 'Right':
-            # Beweeg speler naar rechts
-            self.canvas.move(self.player.icon, self.player_snelheid, 0)
+            self.player.move(self.player_snelheid, 0)
         elif key == 'Down':
-            # Beweeg speler naar beneden
-            self.canvas.move(self.player.icon, 0, self.player_snelheid)
+            self.player.move(0, self.player_snelheid)
         elif key == 'Up':
-            # Beweeg speler naar boven
-            self.canvas.move(self.player.icon, 0, -self.player_snelheid)
+            self.player.move(0, -self.player_snelheid)
 
     def game_loop(self):
-        # Deze code wordt ongeveer 60x per second uitgevoerd
-        self.canvas.move(self.bomb.icon, self.bomb_snelheid, self.bomb_snelheid)
+        # Beweeg de bom schuin naar beneden over het scherm
+        self.bomb.move(self.bomb_snelheid, self.bomb_snelheid)
+
+        # Check of de bom de speler heeft geraakt
+        if self.player.geraakt_door(self.bomb):
+            print(f'Speler is geraakt door een bom!!!')
+
         self.game.after(16, self.game_loop)

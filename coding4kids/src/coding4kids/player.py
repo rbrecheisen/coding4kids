@@ -6,7 +6,18 @@ class Player:
         self.player_field = player_field
         self.x = start_x
         self.y = start_y
-        self.image = tk.PhotoImage(file='resources/dude_front.png')
-        self.icon = player_field.canvas.create_image(self.x, self.y, anchor="nw", image=self.image)
+        self.image = tk.PhotoImage(file='coding4kids/src/coding4kids/resources/dude_front.png')
+        self.icon = self.player_field.canvas.create_image(self.x, self.y, anchor="nw", image=self.image)
         self.breedte = self.image.width()
         self.hoogte = self.image.height()
+
+    def move(self, x, y):
+        self.player_field.canvas.move(self.icon, x, y)
+        self.x = x
+        self.y = y
+
+    def geraakt_door(self, object):
+        if object.x > self.x and object.x < self.x + self.breedte and object.y > self.y and object.y < self.y + self.hoogte:
+            return True
+        else:
+            return False
