@@ -1,7 +1,7 @@
 import tkinter as tk
 import random
 
-from gameobjects import Player, Bomb, Star
+from gameobjects import Player, Bomb, Star, Block
 
 SNELHEID_PLAYER = 10
 SNELHEID_BOMB = 5
@@ -43,6 +43,10 @@ class Game:
         self.aantal_stars = 10
         self.stars = self.create_stars(self.aantal_stars)
 
+        # Maak blokken aan waar de speler en bommen tegenaan kunt lopen. Ieder level heeft 
+        # andere blokken waardoor het steeds anders is hoe je moet rondlopen!
+        self.blocks = self.create_blocks()
+
         # Begin bij het 1e level and laat dit zien op het scherm
         self.level = 1
         self.level_text_id = -1
@@ -66,8 +70,8 @@ class Game:
     def create_bombs(self, aantal):
         bombs = []
         for i in range(aantal):
-            x = random.randint(20, self.breedte - 20)
-            y = random.randint(20, self.hoogte - 20)
+            x = random.randint(40, self.breedte-40)
+            y = random.randint(60, self.hoogte-40)
             bombs.append(Bomb(self.canvas, x, y))
         return bombs
     
@@ -75,10 +79,20 @@ class Game:
     def create_stars(self, aantal):
         stars = []
         for i in range(aantal):
-            x = random.randint(20, self.breedte - 20)
-            y = random.randint(20, self.hoogte - 20)
+            x = random.randint(40, self.breedte-40)
+            y = random.randint(60, self.hoogte-40)
             stars.append(Star(self.canvas, x, y))
         return stars
+
+    #=================================================================================
+    def create_blocks(self):
+        blocks = [
+            Block(self.canvas, 0, 40, 20, self.hoogte),
+            Block(self.canvas, self.breedte-20, 40, self.breedte, self.hoogte),            
+            Block(self.canvas, 20, 40, self.breedte-20, 60),
+            Block(self.canvas, 20, self.hoogte-20, self.breedte-20, self.hoogte),
+        ]
+        return blocks
 
     #=================================================================================
     def move_player(self):
@@ -115,7 +129,7 @@ class Game:
     def update_level(self, level):
         # Maak de nieuwe level tekst en bepaal de (x, y) positie van de tekst
         level_text = 'Level ' + str(level)
-        x = self.breedte / 2 - self.player.breedte / 2
+        x = self.breedte - 60
         y = 20
 
         # Als dit de eerste keer is dat je het level laat zien, dan maak de nieuwe
@@ -131,8 +145,9 @@ class Game:
         
     #=================================================================================
     def update_score(self, score):
+        # Maak de nieuwe score tekst en bepaal de (x, y) positie van de tekst
         score_text = 'Score: ' + str(score)
-        x = 50
+        x = self.breedte / 2 - self.player.breedte / 2
         y = 20
 
         # Als dit de eerste keer is dat je de score laat zien, dan maak de nieuwe
