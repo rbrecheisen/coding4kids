@@ -1,7 +1,8 @@
 import tkinter as tk
 import random
 
-from gameobjects import Player, Bomb, Star, Block
+from gameobjects import Player, Bomb, Star, Brick
+from layouts import LEVELS
 
 SNELHEID_PLAYER = 10
 SNELHEID_BOMB = 5
@@ -43,14 +44,14 @@ class Game:
         self.aantal_stars = 10
         self.stars = self.create_stars(self.aantal_stars)
 
-        # Maak blokken aan waar de speler en bommen tegenaan kunt lopen. Ieder level heeft 
-        # andere blokken waardoor het steeds anders is hoe je moet rondlopen!
-        self.blocks = self.create_blocks()
-
         # Begin bij het 1e level and laat dit zien op het scherm
         self.level = 1
         self.level_text_id = -1
         self.update_level(self.level)
+
+        # Maak blokken aan waar de speler en bommen tegenaan kunt lopen. Ieder level heeft 
+        # andere blokken waardoor het steeds anders is hoe je moet rondlopen!
+        self.bricks = self.create_layout(self.level)
 
         # Laat de score zien op het scherm. Op het begin is de score nul. Voor 
         # iedere ster die je verzameld score je 10 punten
@@ -71,7 +72,7 @@ class Game:
         bombs = []
         for i in range(aantal):
             x = random.randint(40, self.breedte-40)
-            y = random.randint(60, self.hoogte-40)
+            y = 0
             bombs.append(Bomb(self.canvas, x, y))
         return bombs
     
@@ -85,14 +86,16 @@ class Game:
         return stars
 
     #=================================================================================
-    def create_blocks(self):
-        blocks = [
-            Block(self.canvas, 0, 40, 20, self.hoogte),
-            Block(self.canvas, self.breedte-20, 40, self.breedte, self.hoogte),            
-            Block(self.canvas, 20, 40, self.breedte-20, 60),
-            Block(self.canvas, 20, self.hoogte-20, self.breedte-20, self.hoogte),
-        ]
-        return blocks
+    def create_layout(self, level):
+        bricks = []
+        layout = LEVELS[level]
+        for i in range(len(layout)):
+            rij = layout[i]
+            for j, char in enumerate(rij):
+                if char == '1':
+                    brick = Brick(self.canvas, i, j)
+                    bricks.append(brick)
+        return bricks
 
     #=================================================================================
     def move_player(self):

@@ -82,3 +82,24 @@ class Block:
             object.y + object.hoogte < self.y or
             object.y > self.y + self.hoogte
         )
+    
+
+class Brick:
+
+    #=================================================================================
+    def __init__(self, canvas, rij, kolom):
+        self.canvas = canvas
+        self.breedte = 20
+        self.hoogte = 20
+        self.x = kolom * self.breedte
+        self.y = rij * self.hoogte
+        self.canvas.create_rectangle(self.x, self.y, self.x + self.breedte, self.y + self.hoogte, fill='green', outline='')
+
+    #=================================================================================
+    def hit_by(self, object):
+        return not (
+            object.x + object.breedte < self.x or
+            object.x > self.x + self.breedte or
+            object.y + object.hoogte < self.y or
+            object.y > self.y + self.hoogte
+        )
