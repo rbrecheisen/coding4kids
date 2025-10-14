@@ -10,6 +10,7 @@ requires-python = ">=3.11"
 dependencies = [
     "ollama",
     "gpt4all",
+    "arcade",
 ]
 
 [tool.poetry]
