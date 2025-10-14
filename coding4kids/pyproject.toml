@@ -16,7 +16,7 @@ dependencies = [
 packages = [{include = "coding4kids", from = "src"}]
 
 [tool.poetry.scripts]
-coding4kids = "coding4kids.app:main"
+coding4kids = "coding4kids.main:main"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.1"
