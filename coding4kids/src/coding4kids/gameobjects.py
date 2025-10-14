@@ -61,29 +61,6 @@ class Star:
         self.hoogte = self.image.height()
 
 
-class Block:
-
-    #=================================================================================
-    def __init__(self, canvas, x1, y1, x2, y2):
-        self.canvas = canvas
-        self.x1 = x1
-        self.y1 = y1
-        self.x2 = x2
-        self.y2 = y2
-        self.breedte = self.x2 - self.x1
-        self.hoogte = self.y2 - self.y1
-        self.canvas.create_rectangle(self.x1, self.y1, self.x2, self.y2, fill='green', outline='')
-
-    #=================================================================================
-    def hit_by(self, object):
-        return not (
-            object.x + object.breedte < self.x or
-            object.x > self.x + self.breedte or
-            object.y + object.hoogte < self.y or
-            object.y > self.y + self.hoogte
-        )
-    
-
 class Brick:
 
     #=================================================================================
@@ -97,9 +74,4 @@ class Brick:
 
     #=================================================================================
     def hit_by(self, object):
-        return not (
-            object.x + object.breedte < self.x or
-            object.x > self.x + self.breedte or
-            object.y + object.hoogte < self.y or
-            object.y > self.y + self.hoogte
-        )
+        return False
