@@ -11,10 +11,10 @@ class Player:
         self.breedte = self.image.width()
         self.hoogte = self.image.height()
 
-    def move(self, x, y):
-        self.player_field.canvas.move(self.icon, x, y)
-        self.x = x
-        self.y = y
+    def move(self, dx, dy):
+        self.player_field.canvas.move(self.icon, dx, dy)
+        self.x += dx
+        self.y += dy
 
     def geraakt_door(self, object):
         if object.x > self.x and object.x < self.x + self.breedte and object.y > self.y and object.y < self.y + self.hoogte:

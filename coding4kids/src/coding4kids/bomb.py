@@ -18,10 +18,10 @@ class Bomb:
         self.breedte = self.image.width()
         self.hoogte = self.image.height()
 
-    def move(self, x, y):
+    def move(self, dx, dy):
         # Beweeg de bom naar de nieuwe positie (x, y)
-        self.player_field.canvas.move(self.icon, x, y)
+        self.player_field.canvas.move(self.icon, dx, dy)
 
         # Bewaar de nieuwe positie van de bom
-        self.x = x
-        self.y = y
+        self.x += dx
+        self.y += dy
