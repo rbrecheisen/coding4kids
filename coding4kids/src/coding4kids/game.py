@@ -99,14 +99,29 @@ class Game:
 
     #=================================================================================
     def move_player(self):
+        dx = 0
+        dy = 0
+
+        # Afhankelijk van welke toets was ingedrukt bepalen we de verplaatsing (dx, dy)
+        # van de speler.
         if 'Left' in self.keys_pressed:
-            self.player.move(-SNELHEID_PLAYER, 0)
+            dx = -SNELHEID_PLAYER
+            dy = 0
         elif 'Right' in self.keys_pressed:
-            self.player.move(SNELHEID_PLAYER, 0)
+            dx = SNELHEID_PLAYER
+            dy = 0
         elif 'Down' in self.keys_pressed:
-            self.player.move(0, SNELHEID_PLAYER)
+            dx = 0
+            dy = SNELHEID_PLAYER
         elif 'Up' in self.keys_pressed:
-            self.player.move(0, -SNELHEID_PLAYER)
+            dx = 0
+            dy = -SNELHEID_PLAYER
+        
+        # Verplaats de speler en check dan of er een botsing is met een muur. Zo ja,
+        # verplaats de speler terug.
+        self.player.move(dx, dy)
+        if self.player_has_hit_wall():
+            self.player.move(-dx, -dy)
 
     #=================================================================================
     def key_pressed(self, event):
@@ -117,6 +132,18 @@ class Game:
     def key_released(self, event):
         # Verwijder de pijltjes toets uit de lijst van ingedrukte toetsen
         self.keys_pressed.discard(event.keysym)
+
+    #=================================================================================
+    def player_has_hit_wall(self):
+        for brick in self.bricks:
+            if self.player.hit_by(brick):
+                return True
+        return False
+
+    #=================================================================================
+    def bomb_has_hit_wall(self):
+        # We moeten weten vanaf welke richting de bom komt anders kan ie niet stuiteren
+        return False
 
     #=================================================================================
     def display_game_over(self):
@@ -177,7 +204,7 @@ class Game:
 
         # Beweeg alle bommen in de lijst schuin door het spelerveld
         for bomb in self.bombs:
-            bomb.move(SNELHEID_BOMB, SNELHEID_BOMB)
+            bomb.move()
 
         # Check of de speler is geraakt 1 van de bommen. Zo ja, 
         # dan is het game over
