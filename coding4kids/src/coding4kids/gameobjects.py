@@ -40,13 +40,23 @@ class Bomb:
         self.icon = self.canvas.create_image(self.x, self.y, anchor="nw", image=self.image)
         self.breedte = self.image.width()
         self.hoogte = self.image.height()
+        self.dx = 5
+        self.dy = 5
 
     #=================================================================================
-    def move(self, dx, dy):
-        self.canvas.move(self.icon, dx, dy)
-        self.x += dx
-        self.y += dy
+    def move(self):
+        self.canvas.move(self.icon, self.dx, self.dy)
+        self.x += self.dx
+        self.y += self.dy
 
+    #=================================================================================
+    def hit_by(self, object):
+        return not (
+            object.x + object.breedte < self.x or
+            object.x > self.x + self.breedte or
+            object.y + object.hoogte < self.y or
+            object.y > self.y + self.hoogte
+        )
 
 class Star:
 
@@ -71,7 +81,3 @@ class Brick:
         self.x = kolom * self.breedte
         self.y = rij * self.hoogte
         self.canvas.create_rectangle(self.x, self.y, self.x + self.breedte, self.y + self.hoogte, fill='green', outline='')
-
-    #=================================================================================
-    def hit_by(self, object):
-        return False
