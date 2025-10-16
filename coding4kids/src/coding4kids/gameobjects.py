@@ -1,3 +1,4 @@
+import random
 import tkinter as tk
 
 
@@ -36,12 +37,13 @@ class Bomb:
         self.canvas = canvas
         self.x = start_x
         self.y = start_y
+        self.snelheid = random.choice([7, 7.25, 7.5, 7.75, 8])
         self.image = tk.PhotoImage(file='coding4kids/src/coding4kids/resources/bomb.png')
         self.icon = self.canvas.create_image(self.x, self.y, anchor="nw", image=self.image)
         self.breedte = self.image.width()
         self.hoogte = self.image.height()
-        self.dx = 5 * richting
-        self.dy = 5
+        self.dx = self.snelheid * richting
+        self.dy = self.snelheid
 
     #=================================================================================
     def move(self, richting_x, richting_y):
