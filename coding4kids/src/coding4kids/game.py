@@ -11,15 +11,15 @@ class Game:
 
     #=================================================================================
     def __init__(self, title):
-        # Maak root object wat game gaat uitvoeren straks
-        self.root = tk.Tk()
-        self.root.title = title        
+        # Maak app object wat de game gaat uitvoeren
+        self.app = tk.Tk()
+        self.app.title = title        
 
         # Maak achtergrond        
         self.achtergrond = tk.PhotoImage(file='coding4kids/src/coding4kids/resources/sky.png')
         self.breedte = self.achtergrond.width()
         self.hoogte = self.achtergrond.height()
-        self.canvas = tk.Canvas(self.root, width=self.breedte, height=self.hoogte)
+        self.canvas = tk.Canvas(self.app, width=self.breedte, height=self.hoogte)
         self.canvas.pack()
         self.canvas.create_image(0, 0, image=self.achtergrond, anchor='nw')
 
@@ -246,9 +246,9 @@ class Game:
         # Wacht heel even (16ms) en roep de functie game_loop nog eens aan. Hierdoor ontstaat
         # er een loop waarin de functie game_loop ongeveer 60x per seconde wordt 
         # aangeroepen
-        self.root.after(16, self.game_loop)
+        self.app.after(16, self.game_loop)
 
     #=================================================================================
     def start(self):
         self.game_loop()
-        self.root.mainloop()
+        self.app.mainloop()
