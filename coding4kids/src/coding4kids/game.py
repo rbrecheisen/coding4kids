@@ -1,8 +1,7 @@
 import tkinter as tk
 import random
 
-from gameobjects import Player, Bomb, Star, Brick
-from layouts import LEVELS
+from gameobjects import Player, Bomb, Star, Wall
 
 SNELHEID_PLAYER = 10
 SNELHEID_BOMB = 5
@@ -14,9 +13,9 @@ class Game:
     def __init__(self, title):
         # Maak root object wat game gaat uitvoeren straks
         self.root = tk.Tk()
-        self.root.title = title
+        self.root.title = title        
 
-        # Maak achtergrond
+        # Maak achtergrond        
         self.achtergrond = tk.PhotoImage(file='coding4kids/src/coding4kids/resources/sky.png')
         self.breedte = self.achtergrond.width()
         self.hoogte = self.achtergrond.height()
@@ -28,13 +27,9 @@ class Game:
         # Het midden bereken je door de helft van het speelveld te nemen en daar de 
         # helft van de speler vanaf te trekken. Dat wordt je x positie. Hetzelfde doe
         # je voor de y positie.
-        self.player = Player(self.canvas, 0, 0)
-        x = self.breedte / 2 - self.player.breedte / 2 - 100
-        y = self.hoogte / 2 - self.player.hoogte / 2
-        self.player.move(x, y)
+        self.player = self.create_player()
 
-        # Maak een lijstje met bommen aan. We beginnen in het 1e level met 1 bom op 
-        # positie (0, 0). Dat is helemaal links bovenin
+        # Maak een lijstje met bommen aan. We beginnen in het 1e level met 1 bom
         self.aantal_bombs = 1
         self.bombs = self.create_bombs(self.aantal_bombs)
 
@@ -44,22 +39,29 @@ class Game:
         self.aantal_stars = 10
         self.stars = self.create_stars(self.aantal_stars)
 
-        # Begin bij het 1e level and laat dit zien op het scherm
+        # Begin bij het 1e level and laat dit zien op het scherm. Omdat we de level tekst
+        # later moeten aanpassen, moeten we ook het ID van de tekst bewaren. Dat is de
+        # variabele self.level_text_id. Die zetten we eerst op -1. Later krijgt deze een
+        # waarde > 0
         self.level = 1
         self.level_text_id = -1
         self.update_level(self.level)
 
-        # Maak blokken aan waar de speler en bommen tegenaan kunt lopen. Ieder level heeft 
-        # andere blokken waardoor het steeds anders is hoe je moet rondlopen!
-        self.bricks = self.create_layout(self.level)
+        # Maak de muren aan de randen van het speelveld. De bommen stuiteren hier tegenaan
+        self.muur_links = Wall(self.canvas, 0, 40, 20, self.hoogte)
+        self.muur_rechts = Wall(self.canvas, self.breedte-20, 40, self.breedte, self.hoogte)
+        self.muur_boven = Wall(self.canvas, 20, 40, self.breedte-20, 60)
+        self.muur_onder = Wall(self.canvas, 20, self.hoogte-20, self.breedte-20, self.hoogte)
 
         # Laat de score zien op het scherm. Op het begin is de score nul. Voor 
-        # iedere ster die je verzameld score je 10 punten
+        # iedere ster die je verzameld score je 10 punten. Ook de score tekst moeten we 
+        # later aanpassen dus we bewaren ook het ID van de tekst (self.score_text_id)
         self.score = 0
         self.score_text_id = -1
         self.update_score(self.score)
 
-        # Houd bij welke toetsen je heb ingedrukt (meestal maar 1tje tegelijkertijd)
+        # Houd een lijstje bij met de toetsen die je heb ingedrukt (meestal maar 
+        # 1tje tegelijkertijd). 
         self.keys_pressed = set()
 
         # Zorg ervoor dat het canvas pijltjes toetsen detecteert
@@ -68,12 +70,23 @@ class Game:
         self.canvas.bind('<KeyRelease>', self.key_released)
 
     #=================================================================================
+    def create_player(self):
+        player = Player(self.canvas, 0, 0)
+        x = self.breedte / 2 - player.breedte / 2 - 100
+        y = self.hoogte / 2 - player.hoogte / 2
+        player.move(x, y)
+        return player
+
+    #=================================================================================
     def create_bombs(self, aantal):
         bombs = []
         for i in range(aantal):
+            # Maak een willekeurige x positie aan bovenin het scherm
             x = random.randint(40, self.breedte-40)
-            y = 0
-            bombs.append(Bomb(self.canvas, x, y))
+            y = 80
+            # Maak een willekeurige horizontale richting aan. Deze kan 1 of -1 zijn
+            richting = random.choice([-1, 1])
+            bombs.append(Bomb(self.canvas, x, y, richting))
         return bombs
     
     #=================================================================================
@@ -84,18 +97,6 @@ class Game:
             y = random.randint(60, self.hoogte-40)
             stars.append(Star(self.canvas, x, y))
         return stars
-
-    #=================================================================================
-    def create_layout(self, level):
-        bricks = []
-        layout = LEVELS[level]
-        for i in range(len(layout)):
-            rij = layout[i]
-            for j, char in enumerate(rij):
-                if char == '1':
-                    brick = Brick(self.canvas, i, j)
-                    bricks.append(brick)
-        return bricks
 
     #=================================================================================
     def move_player(self):
@@ -135,14 +136,14 @@ class Game:
 
     #=================================================================================
     def player_has_hit_wall(self):
-        for brick in self.bricks:
-            if self.player.hit_by(brick):
-                return True
-        return False
-
-    #=================================================================================
-    def bomb_has_hit_wall(self):
-        # We moeten weten vanaf welke richting de bom komt anders kan ie niet stuiteren
+        if self.player.hit_by(self.muur_links):
+            return True
+        if self.player.hit_by(self.muur_rechts):
+            return True
+        if self.player.hit_by(self.muur_boven):
+            return True
+        if self.player.hit_by(self.muur_onder):
+            return True
         return False
 
     #=================================================================================
@@ -202,9 +203,18 @@ class Game:
         # Beweeg de speler indien nodig (als je een pijltjes toets hebt ingedrukt)
         self.move_player()
 
-        # Beweeg alle bommen in de lijst schuin door het spelerveld
+        # Beweeg alle bommen in de lijst schuin door het spelerveld. Als een bom een
+        # muur raakt moet de bom er vanaf stuiteren. Je geeft dat aan door de richting
+        # van de bom om te draaien. Als de bom tegen de zijmuren bots dan draai je de
+        # X richting om. Bots de bom tegen de boven of ondermuur, dan draai je de Y
+        # richting om
         for bomb in self.bombs:
-            bomb.move()
+            if bomb.hit_by(self.muur_links) or bomb.hit_by(self.muur_rechts):
+                bomb.move(-1, 1)
+            elif bomb.hit_by(self.muur_boven) or bomb.hit_by(self.muur_onder):
+                bomb.move(1, -1)
+            else:
+                bomb.move(1, 1)
 
         # Check of de speler is geraakt 1 van de bommen. Zo ja, 
         # dan is het game over
@@ -223,11 +233,15 @@ class Game:
                 break
         
         # Check of alle sterren zijn verzameld. Zo ja, dan beginnen we met het volgende
-        # level maar dan met een extra bom om het moeilijker te maken!
+        # level maar dan met een extra bom om het moeilijker te maken! We maken ook een
+        # nieuwe set sterren aan en een nieuwe player
         if self.all_stars_collected():
             self.level += 1
             self.update_level(self.level)
             self.stars = self.create_stars(10)
+            self.aantal_bombs += 1
+            self.bombs = self.create_bombs(self.aantal_bombs)
+            self.player = self.create_player()
         
         # Wacht heel even (16ms) en roep de functie game_loop nog eens aan. Hierdoor ontstaat
         # er een loop waarin de functie game_loop ongeveer 60x per seconde wordt 

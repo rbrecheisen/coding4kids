@@ -32,7 +32,7 @@ class Player:
 class Bomb:
 
     #=================================================================================
-    def __init__(self, canvas, start_x, start_y):
+    def __init__(self, canvas, start_x, start_y, richting):
         self.canvas = canvas
         self.x = start_x
         self.y = start_y
@@ -40,11 +40,13 @@ class Bomb:
         self.icon = self.canvas.create_image(self.x, self.y, anchor="nw", image=self.image)
         self.breedte = self.image.width()
         self.hoogte = self.image.height()
-        self.dx = 5
+        self.dx = 5 * richting
         self.dy = 5
 
     #=================================================================================
-    def move(self):
+    def move(self, richting_x, richting_y):
+        self.dx *= richting_x
+        self.dy *= richting_y
         self.canvas.move(self.icon, self.dx, self.dy)
         self.x += self.dx
         self.y += self.dy
@@ -71,13 +73,13 @@ class Star:
         self.hoogte = self.image.height()
 
 
-class Brick:
+class Wall:
 
     #=================================================================================
-    def __init__(self, canvas, rij, kolom):
+    def __init__(self, canvas, x1, y1, x2, y2):
         self.canvas = canvas
-        self.breedte = 20
-        self.hoogte = 20
-        self.x = kolom * self.breedte
-        self.y = rij * self.hoogte
-        self.canvas.create_rectangle(self.x, self.y, self.x + self.breedte, self.y + self.hoogte, fill='green', outline='')
+        self.x = x1
+        self.y = y1
+        self.breedte = x2 - x1
+        self.hoogte = y2 - y1
+        self.rectangle = self.canvas.create_rectangle(x1, y1, x2, y2, fill='green', outline='')
