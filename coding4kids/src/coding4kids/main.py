@@ -2,7 +2,7 @@ from game import Game
 
 
 def main():
-    game = Game('Coding4Kids')
+    game = Game('PyPhaser')
     game.start()
 
 
