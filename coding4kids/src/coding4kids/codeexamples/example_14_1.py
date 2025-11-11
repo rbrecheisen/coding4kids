@@ -1,5 +1,5 @@
 import tkinter as tk
-2
+
 app = tk.Tk()
 app.title("Bewegende speler")
 sky = tk.PhotoImage(file="sky.png")
