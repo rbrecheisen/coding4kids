@@ -32,10 +32,11 @@ class Muur:
         )
 
     def geraakt_door_hoekpunt(self, x,y):
-        if x>self.x and \
-            x<self.x+self.breedte and \
-            y>self.y and \
-            y<self.y+self.hoogte:
+        a = x > self.x
+        b = x < self.x + self.breedte
+        c = y > self.y
+        d = y < self.y + self.hoogte
+        if a and b and c and d:
             return True
         else:
             return False
