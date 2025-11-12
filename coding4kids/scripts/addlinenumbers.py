@@ -3,6 +3,7 @@ import sys
 
 
 def main(file_name):
+    print(os.getcwd())
     file_path = os.path.join(os.getcwd(), f'src/coding4kids/codeexamples/{file_name}')
     if os.path.exists(file_path):
         print(file_path)

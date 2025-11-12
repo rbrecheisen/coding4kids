@@ -1,4 +1,3 @@
-import tkinter as tk
-
-app = tk.Tk()
+import tkinter
+app = tkinter.Tk()
 app.mainloop()
